@@ -22,7 +22,15 @@
          font-style: oblique;
          
         }
-
+        .produkitem {
+          height: 200px;
+          text-align: center;
+          object-fit: cover;
+        }
+  
+        .card-title {
+          font-size: 16px;
+        }
 
      </style>
   </head>
@@ -57,7 +65,8 @@
     
         <div class="produk">
           <a name="produk"></a>
-
+          <div id="produklist"></div>
+  
         </div>
          <footer class="text-muted" style="clear:both;">
           <a href="#">top</a>
@@ -70,6 +79,7 @@
     $(function(){
       var URLAPI = "https://apimhstiki.ptov.my.id"
       var NIM = "2401010423"
+      let urlproduk = URLAPI + "/" + NIM + "/produk/list";
 
       $.ajax({
         url:URLAPI +'/slideshow/'+NIM,
@@ -95,6 +105,32 @@
         console.log('ajax error :', status,error)
         }
       })
+
+      $.ajax({
+        url:urlproduk,
+        method: 'GET',
+        dataType: 'json',
+        success:function(dta){
+          if(dta && dta.error == 0){
+              let tproduk=''
+              dta.produk.forEach(function(brg, index){
+               tproduk+= `<div class="card" style="width: 15rem; float:left;margin : 15px">
+                   <img src="${brg.IMG}" class="card-img-top produkitem" alt="${brg.ITEM}">
+                   <div class="card-body">
+                     <h5 class="card-title">${brg.ITEM}</h5>
+                     <p class="card-text">${brg.HRGJUAL}.</p>
+                     <a href="#" class="btn btn-primary">detail</a>
+                     <a href="#" class="btn btn-success">Beli</a>
+                   </div>
+                 </div>`
+              })
+              $('#produklist').html(tproduk)
+          }    
+        },
+        error: function(xhr,status,error){
+          console.log("ajax Error: ",status,error)
+        }
+    });
 
     })
   </script>
